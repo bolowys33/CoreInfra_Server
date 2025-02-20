@@ -24,6 +24,7 @@ export class AppFilter implements ExceptionFilter {
 
     let statusCode: number;
     let message: string;
+    console.log(exception);
 
     switch (true) {
       case exception instanceof NotFoundException:
