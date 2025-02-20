@@ -6,6 +6,7 @@ import {
 } from 'src/models/authentication.model';
 import { JwtModule } from '@nestjs/jwt';
 import { UserResponseModel } from 'src/models/user-profile.model';
+import { CardSchemeModel } from 'src/models/card-scheme.schema';
 
 @Global()
 @Module({
@@ -14,10 +15,12 @@ import { UserResponseModel } from 'src/models/user-profile.model';
     ResponseHelperService<RegisterResponseModel>,
     ResponseHelperService<SignInResponseModel>,
     ResponseHelperService<UserResponseModel>,
+    ResponseHelperService<CardSchemeModel>,
   ],
   exports: [
     ResponseHelperService<RegisterResponseModel>,
     ResponseHelperService<SignInResponseModel>,
+    ResponseHelperService<CardSchemeModel>,
     ResponseHelperService<UserResponseModel>,
   ],
 })
