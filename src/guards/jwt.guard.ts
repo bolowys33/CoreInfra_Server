@@ -1,9 +1,10 @@
-import { Injectable, ExecutionContext, CanActivate } from '@nestjs/common';
+import { Injectable, ExecutionContext, CanActivate, Global } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ResponseHelperService } from 'src/helper/response-helper.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthenticatedRequest } from 'src/schema/request.schema';
 
+@Global()
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(

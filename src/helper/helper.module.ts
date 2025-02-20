@@ -5,6 +5,7 @@ import {
   SignInResponseModel,
 } from 'src/models/authentication.model';
 import { JwtModule } from '@nestjs/jwt';
+import { UserResponseModel } from 'src/models/user-profile.model';
 
 @Global()
 @Module({
@@ -12,10 +13,12 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [
     ResponseHelperService<RegisterResponseModel>,
     ResponseHelperService<SignInResponseModel>,
+    ResponseHelperService<UserResponseModel>,
   ],
   exports: [
     ResponseHelperService<RegisterResponseModel>,
     ResponseHelperService<SignInResponseModel>,
+    ResponseHelperService<UserResponseModel>,
   ],
 })
 export class HelperModule {}
