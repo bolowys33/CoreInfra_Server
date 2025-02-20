@@ -5,7 +5,7 @@ import {
 } from './dto/card-scheme.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ResponseHelperService } from 'src/helper/response-helper.service';
-import { CardSchemeModel } from 'src/models/card-scheme.schema';
+import { CardSchemeModel } from 'src/models/card-scheme.model';
 import { ResponseModel } from 'src/models/global.model';
 
 @Injectable()
@@ -16,7 +16,6 @@ export class CardSchemeService {
     private multiResponseHelper: ResponseHelperService<CardSchemeModel[]>,
   ) {}
 
-  // Create a new card scheme
   async createScheme(
     dto: CreateCardSchemeDto,
   ): Promise<ResponseModel<CardSchemeModel>> {
@@ -84,22 +83,49 @@ export class CardSchemeService {
   }
 
   async deleteScheme(id: string): Promise<ResponseModel<CardSchemeModel>> {
-    const existingScheme = await this.prisma.cardScheme.findUnique({
-      where: { id },
-    });
+    return this.prisma.$transaction(async (prisma) => {
+      const existingScheme = await prisma.cardScheme.findUnique({
+        where: { id },
+        include: {
+          cardProfile: {
+            include: {
+              fees: true,
+            },
+          },
+        },
+      });
 
-    if (!existingScheme) {
-      this.singleResponseHelper.returnNotFound(
-        `Scheme with ID ${id} not found`,
+      if (!existingScheme) {
+        throw this.singleResponseHelper.returnNotFound(
+          `Scheme with ID ${id} not found`,
+        );
+      }
+
+      const profileIds = existingScheme.cardProfile.map(
+        (profile) => profile.id,
       );
-    }
 
-    await this.prisma.cardScheme.delete({
-      where: { id },
+      if (profileIds.length > 0) {
+        await prisma.fee.deleteMany({
+          where: {
+            cardProfileId: { in: profileIds },
+          },
+        });
+
+        await prisma.cardProfile.deleteMany({
+          where: {
+            cardSchemeId: id,
+          },
+        });
+      }
+
+      await prisma.cardScheme.delete({
+        where: { id },
+      });
+
+      return this.singleResponseHelper.returnSuccessObject(
+        'Scheme and all related profiles and fees deleted successfully',
+      );
     });
-
-    return this.singleResponseHelper.returnSuccessObject(
-      'Scheme deleted successfully',
-    );
   }
 }

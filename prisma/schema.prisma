@@ -28,7 +28,7 @@ model CardScheme {
   name        SchemeName
   panLength   Int
   createdAt   DateTime      @default(now())
-  CardProfile CardProfile[]
+  cardProfile CardProfile[]
 }
 
 model CardProfile {
@@ -37,7 +37,7 @@ model CardProfile {
   binPrefix       String
   expiration      Int
   description     String
-  currrency       Currency
+  currency       Currency
   branchBlacklist String
   createdAt       DateTime @default(now())
 
