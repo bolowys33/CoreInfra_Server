@@ -6,6 +6,7 @@ import { HelperModule } from './helper/helper.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CardSchemeModule } from './card-scheme/card-scheme.module';
+import { CardProfileModule } from './card-profile/card-profile.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CardSchemeModule } from './card-scheme/card-scheme.module';
     UsersModule,
     AuthModule,
     CardSchemeModule,
+    CardProfileModule,
   ],
 })
 export class AppModule {}

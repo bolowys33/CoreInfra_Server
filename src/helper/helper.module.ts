@@ -6,7 +6,8 @@ import {
 } from 'src/models/authentication.model';
 import { JwtModule } from '@nestjs/jwt';
 import { UserResponseModel } from 'src/models/user-profile.model';
-import { CardSchemeModel } from 'src/models/card-scheme.schema';
+import { CardSchemeModel } from 'src/models/card-scheme.model';
+import { CardProfileModel } from 'src/models/card-profile.model';
 
 @Global()
 @Module({
@@ -16,12 +17,14 @@ import { CardSchemeModel } from 'src/models/card-scheme.schema';
     ResponseHelperService<SignInResponseModel>,
     ResponseHelperService<UserResponseModel>,
     ResponseHelperService<CardSchemeModel>,
+    ResponseHelperService<CardProfileModel>,
   ],
   exports: [
     ResponseHelperService<RegisterResponseModel>,
     ResponseHelperService<SignInResponseModel>,
     ResponseHelperService<CardSchemeModel>,
     ResponseHelperService<UserResponseModel>,
+    ResponseHelperService<CardProfileModel>,
   ],
 })
 export class HelperModule {}

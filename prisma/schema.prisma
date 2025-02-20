@@ -1,8 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -14,24 +14,76 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  isVerified Boolean @default(false)
-  isAdmin   Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  email      String   @unique
+  name       String
+  password   String
+  isVerified Boolean  @default(false)
+  isAdmin    Boolean  @default(false)
+  createdAt  DateTime @default(now())
 }
 
 model CardScheme {
-  id        String     @id @default(uuid())
-  name      SchemeName
-  panLength Int
-  createdAt DateTime @default(now())
+  id          String        @id @default(uuid())
+  name        SchemeName
+  panLength   Int
+  createdAt   DateTime      @default(now())
+  cardProfile CardProfile[]
+}
+
+model CardProfile {
+  id              String   @id @default(uuid())
+  name            String
+  binPrefix       String
+  expiration      Int
+  description     String
+  currency       Currency
+  branchBlacklist String
+  createdAt       DateTime @default(now())
+
+  cardSchemeId String
+  cardScheme   CardScheme @relation(fields: [cardSchemeId], references: [id])
+
+  fees Fee[]
+}
+
+model Fee {
+  id         String     @id @default(uuid())
+  name       String
+  value      Int
+  currency   Currency
+  frequency  Frequency
+  impact     FeeImpact
+  accountPad AccountPad
+  account    String?
+
+  cardProfileId String
+  cardProfile   CardProfile @relation(fields: [cardProfileId], references: [id])
+}
+
+enum Currency {
+  NGN
+  USD
+}
+
+enum Frequency {
+  ONE_OFF
+  MONTHLY
+}
+
+enum FeeImpact {
+  ISSUANCE
+  PIN_REISSUE
+}
+
+enum AccountPad {
+  NONE
+  BRANCH_CODE_PREFIX
+  BRANCH_CODE_SUFFIX
 }
 
 enum SchemeName {
   VISA
-  MASTERCARD
   VERVE
+  MASTERCARD
 }

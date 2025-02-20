@@ -15,7 +15,7 @@ import {
   CreateCardSchemeDto,
   UpdateCardSchemeDto,
 } from './dto/card-scheme.dto';
-import { CardSchemeModel } from 'src/models/card-scheme.schema';
+import { CardSchemeModel } from 'src/models/card-scheme.model';
 import { ResponseModel } from 'src/models/global.model';
 import {
   ApiTags,
@@ -44,7 +44,7 @@ export class CardSchemeController {
   @Post('create')
   @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create a new card scheme' })
+  @ApiOperation({ summary: 'Allows admin to create a new card scheme' })
   @ApiBody({ type: CreateCardSchemeDto })
   @ApiOkResponse({
     schema: {
@@ -58,10 +58,10 @@ export class CardSchemeController {
       ],
     },
   })
-  createScheme(
+  async createScheme(
     @Body() createCardSchemeDto: CreateCardSchemeDto,
   ): Promise<ResponseModel<CardSchemeModel>> {
-    return this.cardSchemeService.createScheme(createCardSchemeDto);
+    return await this.cardSchemeService.createScheme(createCardSchemeDto);
   }
 
   @Get('get-all')
@@ -82,8 +82,8 @@ export class CardSchemeController {
       ],
     },
   })
-  getAllScheme(): Promise<ResponseModel<CardSchemeModel[]>> {
-    return this.cardSchemeService.getAllSchemes();
+  async getAllScheme(): Promise<ResponseModel<CardSchemeModel[]>> {
+    return await this.cardSchemeService.getAllSchemes();
   }
 
   @Get('get-one/:id')
@@ -101,14 +101,16 @@ export class CardSchemeController {
       ],
     },
   })
-  getScheme(@Param('id') id: string): Promise<ResponseModel<CardSchemeModel>> {
-    return this.cardSchemeService.getScheme(id);
+  async getScheme(
+    @Param('id') id: string,
+  ): Promise<ResponseModel<CardSchemeModel>> {
+    return await this.cardSchemeService.getScheme(id);
   }
 
   @Patch('update/:id')
   @Roles('admin')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Update an existing card scheme' })
+  @ApiOperation({ summary: 'Allows admin to update an existing card scheme' })
   @ApiBody({ type: UpdateCardSchemeDto })
   @ApiOkResponse({
     schema: {
@@ -122,17 +124,17 @@ export class CardSchemeController {
       ],
     },
   })
-  updateScheme(
+  async updateScheme(
     @Param('id') id: string,
     @Body() updateCardSchemeDto: UpdateCardSchemeDto,
   ): Promise<ResponseModel<CardSchemeModel>> {
-    return this.cardSchemeService.updateScheme(id, updateCardSchemeDto);
+    return await this.cardSchemeService.updateScheme(id, updateCardSchemeDto);
   }
 
   @Delete('delete/:id')
   @Roles('admin')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Delete a card scheme' })
+  @ApiOperation({ summary: 'Allows admin to delete a card scheme' })
   @ApiOkResponse({
     description: 'The card scheme has been deleted successfully.',
     schema: { $ref: getSchemaPath(ResponseModel) },
