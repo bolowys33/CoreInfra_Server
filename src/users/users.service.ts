@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ResponseHelperService } from 'src/helper/response-helper.service';
 import { ResponseModel } from 'src/models/global.model';
-import { UserResponseModel } from 'src/models/user-profile.model';
+import {
+  DashboardModel,
+  UserResponseModel,
+} from 'src/models/user-profile.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthenticatedRequest } from 'src/schema/request.schema';
 import { UpdateUserDto } from './dto/user.dto';
@@ -11,6 +14,7 @@ export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     private userSingleResponseHelper: ResponseHelperService<UserResponseModel>,
+    private dashboardResponseHelper: ResponseHelperService<DashboardModel>,
     private userMultiResponseHelper: ResponseHelperService<UserResponseModel[]>,
   ) {}
 
@@ -24,6 +28,34 @@ export class UsersService {
       user,
     );
   }
+  
+  async getAdminDashboard(): Promise<ResponseModel<DashboardModel>> {
+    const activeCard = await this.prisma.card.count();
+    const personalizedCard = await this.prisma.card.count({
+      where: {
+        issueType: 'PERSONALIZED',
+      },
+    });
+    const instantCard = await this.prisma.card.count({
+      where: {
+        issueType: 'INSTANT',
+      },
+    });
+    const cardRequest = await this.prisma.cardRequest.count();
+  
+    const dashboardData: DashboardModel = {
+      activeCard,
+      personalizedCard,
+      instantCard,
+      cardRequest,
+    };
+  
+    return this.dashboardResponseHelper.returnSuccessObject(
+      'Admin dashboard data fetched successfully',
+      dashboardData,
+    );
+  }
+  
 
   async getAllUsers(): Promise<ResponseModel<UserResponseModel[]>> {
     const users = await this.prisma.user.findMany({

@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -51,6 +48,8 @@ export class AuthService {
 
     const otp = this.otpService.generateOTP(6);
 
+    await this.otpService.sendOtpEmail(email, otp, name.split(' ')[0]);
+
     const token = this.jwtService.sign({
       userId: user.id,
       otp,
@@ -94,6 +93,8 @@ export class AuthService {
       userId: user.id,
       otp,
     });
+
+    await this.otpService.sendOtpEmail(email, otp, name.split(' ')[1]);
 
     return this.signUpResponseHelper.returnSuccessObject(
       'Account created successfully',
