@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Currency, FeeImpact, Frequency, AccountPad } from '@prisma/client';
 
-class FeeModel {
+export class FeeModel {
   @ApiProperty({
     title: 'Fee ID',
     description: 'The unique identifier of the fee',
