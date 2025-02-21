@@ -1,8 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -14,24 +14,130 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  isVerified Boolean @default(false)
-  isAdmin   Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id          String        @id @default(uuid())
+  email       String        @unique
+  name        String
+  password    String
+  isVerified  Boolean       @default(false)
+  isAdmin     Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  CardRequest CardRequest[]
+  Cards       Card[]
 }
 
 model CardScheme {
-  id        String     @id @default(uuid())
-  name      SchemeName
-  panLength Int
-  createdAt DateTime @default(now())
+  id          String        @id @default(uuid())
+  name        SchemeName
+  panLength   Int
+  createdAt   DateTime      @default(now())
+  cardProfile CardProfile[]
+}
+
+model CardProfile {
+  id              String   @id @default(uuid())
+  name            String
+  binPrefix       String
+  expiration      Int
+  description     String
+  currency        Currency
+  branchBlacklist String
+  createdAt       DateTime @default(now())
+
+  cardSchemeId String
+  cardScheme   CardScheme @relation(fields: [cardSchemeId], references: [id])
+
+  fees        Fee[]
+  CardRequest CardRequest[]
+}
+
+model Fee {
+  id         String     @id @default(uuid())
+  name       String
+  value      Int
+  currency   Currency
+  frequency  Frequency
+  impact     FeeImpact
+  accountPad AccountPad
+  account    String?
+
+  cardProfileId String
+  cardProfile   CardProfile @relation(fields: [cardProfileId], references: [id])
+  Cards         Card[]
+  cardId        String?
+}
+
+model CardRequest {
+  id           String   @id @default(uuid())
+  branch       String
+  initiator    User     @relation(fields: [userId], references: [id])
+  batch        Int
+  status       Status   @default(PENDING)
+  cardType     CardType
+  charges      String?
+  createdAt    DateTime @default(now())
+  isDownloaded Boolean  @default(false)
+  isSent       Boolean  @default(false)
+
+  cardProfileId String
+  cardProfile   CardProfile @relation(fields: [cardProfileId], references: [id])
+  userId        String
+}
+
+model Card {
+  id         String   @id @default(uuid())
+  cardHolder User     @relation(fields: [userId], references: [id])
+  pan        String
+  batch      Int
+  expiry     Int
+  fees       Fee[]
+  cardType   CardType
+  issueType  Issue
+  createdAt  DateTime @default(now())
+
+  userId String
+}
+
+enum Status {
+  READY
+  IN_PROGRESS
+  PENDING
+  ACKNOWLEDGED
+}
+
+enum Issue {
+  PERSONALIZED
+  INSTANT
+}
+
+enum CardType {
+  DEBIT
+  CREDIT
+  PREPAID
+}
+
+enum Currency {
+  NGN
+  USD
+}
+
+enum Frequency {
+  ONE_OFF
+  MONTHLY
+}
+
+enum FeeImpact {
+  ISSUANCE
+  PIN_REISSUE
+}
+
+enum AccountPad {
+  NONE
+  BRANCH_CODE_PREFIX
+  BRANCH_CODE_SUFFIX
 }
 
 enum SchemeName {
   VISA
-  MASTERCARD
   VERVE
+  MASTERCARD
 }

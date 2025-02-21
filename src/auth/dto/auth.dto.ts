@@ -63,7 +63,7 @@ export class SignInDto {
 }
 
 export class VerifyOtpDto {
-  @IsEmail()
+  @IsString()
   @IsNotEmpty()
   @ApiProperty({
     title: 'Verification Token',
