@@ -106,7 +106,9 @@ export class CardProfileService {
       this.singleResponseHelper.returnNotFound('No card profile found');
     }
 
-    const data: CardProfileModel[] = profiles.map(this.formatResult);
+    const data: CardProfileModel[] = profiles.map((profile) =>
+      this.formatResult(profile),
+    );
 
     return this.multiResponseHelper.returnSuccessObject(
       'Card profiles fetched successfully',

@@ -17,7 +17,7 @@ import {
 } from 'src/models/authentication.model';
 
 @Controller('auth')
-@ApiTags('auth')
+@ApiTags('Auth')
 @ApiExtraModels(
   ResponseModel,
   SignUpDto,

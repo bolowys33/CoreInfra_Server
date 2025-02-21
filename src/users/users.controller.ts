@@ -1,10 +1,8 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
-  Param,
   Delete,
   Req,
   HttpCode,
@@ -28,7 +26,7 @@ import { JwtAuthGuard } from 'src/guards/jwt.guard';
 import { Roles } from 'src/guards/decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiExtraModels(ResponseModel, UserResponseModel, UpdateUserDto)
@@ -106,8 +104,9 @@ export class UsersController {
   }
 
   @Delete('delete-user')
+  @Roles('admin')
   @ApiOperation({
-    summary: 'Allows user to delete their account',
+    summary: 'Allows admin to delete user account',
   })
   @ApiOkResponse({
     description: 'The user has been deleted successfully.',

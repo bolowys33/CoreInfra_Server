@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   CreateCardSchemeDto,
   UpdateCardSchemeDto,
@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ResponseHelperService } from 'src/helper/response-helper.service';
 import { CardSchemeModel } from 'src/models/card-scheme.model';
 import { ResponseModel } from 'src/models/global.model';
+import { CardScheme } from '@prisma/client';
 
 @Injectable()
 export class CardSchemeService {
@@ -48,12 +49,14 @@ export class CardSchemeService {
     });
 
     if (!scheme) {
-      throw new NotFoundException(`Scheme with ID ${id} not found`);
+      this.singleResponseHelper.returnNotFound(
+        `Scheme with ID ${id} not found`,
+      );
     }
 
     return this.singleResponseHelper.returnSuccessObject(
       'Scheme fetched successfully',
-      scheme,
+      scheme as CardScheme,
     );
   }
 

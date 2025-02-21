@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  name       String
-  password   String
-  isVerified Boolean  @default(false)
-  isAdmin    Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  id          String        @id @default(uuid())
+  email       String        @unique
+  name        String
+  password    String
+  isVerified  Boolean       @default(false)
+  isAdmin     Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  CardRequest CardRequest[]
 }
 
 model CardScheme {
@@ -37,14 +38,15 @@ model CardProfile {
   binPrefix       String
   expiration      Int
   description     String
-  currency       Currency
+  currency        Currency
   branchBlacklist String
   createdAt       DateTime @default(now())
 
   cardSchemeId String
   cardScheme   CardScheme @relation(fields: [cardSchemeId], references: [id])
 
-  fees Fee[]
+  fees        Fee[]
+  CardRequest CardRequest[]
 }
 
 model Fee {
@@ -59,6 +61,35 @@ model Fee {
 
   cardProfileId String
   cardProfile   CardProfile @relation(fields: [cardProfileId], references: [id])
+}
+
+model CardRequest {
+  id           String   @id @default(uuid())
+  branch       String
+  initiator    User     @relation(fields: [userId], references: [id])
+  batch        Int
+  status       Status   @default(PENDING)
+  cardType     CardType
+  charges      String?
+  createdAt    DateTime @default(now())
+  isDownloaded Boolean  @default(false)
+  isSent       Boolean  @default(false)
+
+  cardProfileId String
+  cardProfile   CardProfile @relation(fields: [cardProfileId], references: [id])
+  userId        String
+}
+
+enum Status {
+  READY
+  IN_PROGRESS
+  PENDING
+  ACKNOWLEDGED
+}
+
+enum CardType {
+  DEBIT
+  CREDIT
 }
 
 enum Currency {
