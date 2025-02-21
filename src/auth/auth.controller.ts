@@ -67,7 +67,7 @@ export class AuthController {
     },
   })
   async registerAdmin(@Body() dto: SignUpDto) {
-    return this.authService.register(dto);
+    return this.authService.registerAdmin(dto);
   }
 
   @ApiOperation({

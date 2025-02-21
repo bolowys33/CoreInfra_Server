@@ -21,7 +21,10 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { ResponseModel } from 'src/models/global.model';
-import { UserResponseModel } from 'src/models/user-profile.model';
+import {
+  DashboardModel,
+  UserResponseModel,
+} from 'src/models/user-profile.model';
 import { JwtAuthGuard } from 'src/guards/jwt.guard';
 import { Roles } from 'src/guards/decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
@@ -29,7 +32,7 @@ import { RolesGuard } from 'src/guards/roles.guard';
 @ApiTags('Users')
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@ApiExtraModels(ResponseModel, UserResponseModel, UpdateUserDto)
+@ApiExtraModels(ResponseModel, UserResponseModel, UpdateUserDto, DashboardModel)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -57,7 +60,7 @@ export class UsersController {
   @Get('get-all')
   @Roles('admin')
   @ApiOperation({
-    summary: 'Allows admin to fetch all user account/profile',
+    summary: 'Allows admin to fetch all user accounts/profiles',
   })
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
@@ -77,6 +80,28 @@ export class UsersController {
   })
   async getAllUsers() {
     return await this.usersService.getAllUsers();
+  }
+
+  @Get('admin-dashboard')
+  @Roles('admin')
+  @ApiOperation({
+    summary: 'Fetch admin dashboard statistics',
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(ResponseModel) },
+        {
+          properties: {
+            data: { $ref: getSchemaPath(DashboardModel) },
+          },
+        },
+      ],
+    },
+  })
+  async getAdminDashboard() {
+    return await this.usersService.getAdminDashboard();
   }
 
   @Patch('update-user')
@@ -112,7 +137,7 @@ export class UsersController {
     description: 'The user has been deleted successfully.',
     schema: { $ref: getSchemaPath(ResponseModel) },
   })
-  async deleteUser(req: AuthenticatedRequest) {
+  async deleteUser(@Req() req: AuthenticatedRequest) {
     return await this.usersService.deleteUser(req.user.id);
   }
 }

@@ -25,3 +25,34 @@ export class UserResponseModel {
   })
   isAdmin: boolean;
 }
+
+export class DashboardModel {
+  @ApiProperty({
+    title: 'Active Cards',
+    description: 'Total number of active cards in the system',
+    example: 100,
+  })
+  activeCard: number;
+
+  @ApiProperty({
+    title: 'Personalized Cards',
+    description: 'Total number of personalized cards issued',
+    example: 50,
+  })
+  personalizedCard: number;
+
+  @ApiProperty({
+    title: 'Instant Cards',
+    description: 'Total number of instant cards issued',
+    example: 30,
+  })
+  instantCard: number;
+
+  @ApiProperty({
+    title: 'Card Requests',
+    description: 'Total number of card requests',
+    example: 20,
+  })
+  cardRequest: number;
+}
+
