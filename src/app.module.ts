@@ -7,16 +7,18 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CardSchemeModule } from './card-scheme/card-scheme.module';
 import { CardProfileModule } from './card-profile/card-profile.module';
+import { CardRequestModule } from './card-request/card-request.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     HelperModule,
-    UsersModule,
     AuthModule,
+    UsersModule,
     CardSchemeModule,
     CardProfileModule,
+    CardRequestModule,
   ],
 })
 export class AppModule {}
