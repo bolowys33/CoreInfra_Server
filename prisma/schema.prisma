@@ -22,6 +22,7 @@ model User {
   isAdmin     Boolean       @default(false)
   createdAt   DateTime      @default(now())
   CardRequest CardRequest[]
+  Cards       Card[]
 }
 
 model CardScheme {
@@ -61,6 +62,8 @@ model Fee {
 
   cardProfileId String
   cardProfile   CardProfile @relation(fields: [cardProfileId], references: [id])
+  Cards         Card[]
+  cardId        String?
 }
 
 model CardRequest {
@@ -80,6 +83,20 @@ model CardRequest {
   userId        String
 }
 
+model Card {
+  id         String   @id @default(uuid())
+  cardHolder User     @relation(fields: [userId], references: [id])
+  pan        String
+  batch      Int
+  expiry     Int
+  fees       Fee[]
+  cardType   CardType
+  issueType  Issue
+  createdAt  DateTime @default(now())
+
+  userId String
+}
+
 enum Status {
   READY
   IN_PROGRESS
@@ -87,9 +104,15 @@ enum Status {
   ACKNOWLEDGED
 }
 
+enum Issue {
+  PERSONALIZED
+  INSTANT
+}
+
 enum CardType {
   DEBIT
   CREDIT
+  PREPAID
 }
 
 enum Currency {

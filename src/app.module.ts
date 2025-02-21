@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { CardSchemeModule } from './card-scheme/card-scheme.module';
 import { CardProfileModule } from './card-profile/card-profile.module';
 import { CardRequestModule } from './card-request/card-request.module';
+import { CardsModule } from './cards/cards.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CardRequestModule } from './card-request/card-request.module';
     CardSchemeModule,
     CardProfileModule,
     CardRequestModule,
+    CardsModule,
   ],
 })
 export class AppModule {}

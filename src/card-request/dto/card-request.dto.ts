@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CardType, Status } from '@prisma/client';
-import { IsEnum, IsInt, IsString, IsUUID } from 'class-validator';
+import { IsEnum,  IsString, IsUUID } from 'class-validator';
 
 export class CreateCardRequestDto {
   @ApiProperty({
